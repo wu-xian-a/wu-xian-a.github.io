@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+       .envelope {
+            width: 500px;
+            height: 350px;
+            background-color: #f8ecc2;
+            border: 2px solid #d4b16a;
+            border-radius: 8px;
+            position: relative;
+            margin: 50px auto;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            perspective: 1000px; /* 增强3D折叠效果 */
+        }
+
+       .flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 45%;
+            background-color: #e6c871;
+            border-bottom: 2px solid #d4b16a;
+            transform-origin: bottom;
+            transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 2;
+        }
+
+       .flap::after {
+            content: '封';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 40px;
+            height: 40px;
+            background-color: #d45a5a;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+       .envelope-text {
+            position: absolute;
+            top: 42%;
+            left: 0;
+            width: 100%;
+            height: 55%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #5d4037;
+            font-family: "SimSun", serif;
+            font-size: 20px;
+            font-weight: bold;
+            padding: 0 20px;
+            z-index: 1;
+        }
+
+       .letter {
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            width: 90%;
+            max-width: 1301px; /* 匹配图片实际宽度 */
+            height: 0;
+            background: white;
+            border-radius: 8px;
+            transform: translateX(-50%);
+            transition: height 1.2s ease-out;
+            overflow: hidden;
+            z-index: 0;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+       .letter-content {
+            width: 100%;
+        }
+
+       .letter img {
+            width: 100%!important;
+            height: auto!important;
+            display: block!important;
+            margin: 0 0 15px 0; /* 保持图片间距 */
+            border: none!important;
+        }
+
+        /* 精确计算信件高度：图片总高 + 间距 + 内边距 */
+       .envelope.open >.flap {
+            transform: rotateX(180deg)!important;
+        }
+       .envelope.open >.letter {
+            height: calc(2000px)!important; 
+            /* 图片总高 + 两张图片间距(15*2) + 内边距(20*2) */
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+       .envelope:active {
+            transform: scale(0.98);
+        }
+
+        body {
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 20px 0;
+            overflow-x: hidden; /* 避免横向滚动 */
+        }
+    </style>
+</head>
+<body>
+    <div class="envelope" id="envelope">
+        <div class="flap"></div>
+        <div class="envelope-text">给计科2512班同学们的一封信</div>
+        <div class="letter">
+            <div class="letter-content">
+                <img src="20.jpg" alt="信件内容图片1" onerror="this.src='https://picsum.photos/1301/2344?random=1'; console.log('图片20加载失败')">
+                <img src="21.jpg" alt="信件内容图片2" onerror="this.src='https://picsum.photos/1301/1667?random=2'; console.log('图片21加载失败')">
+                <img src="22.jpg" alt="信件内容图片3" onerror="this.src='https://picsum.photos/1301/1249?random=3'; console.log('图片22加载失败')">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        envelope.addEventListener('click', function() {
+            if (!this.classList.contains('open')) {
+                this.classList.add('open');
+                // 强制刷新高度计算
+                setTimeout(() => {
+                    const letter = document.querySelector('.letter');
+                    letter.style.height = 'auto';
+                    const computedHeight = letter.scrollHeight + 'px';
+                    letter.style.height = '0';
+                    setTimeout(() => {
+                        letter.style.height = computedHeight;
+                    }, 50);
+                }, 600); // 等待封口动画完成
+            }
+        });
+    </script>
+</body>
+</html>
